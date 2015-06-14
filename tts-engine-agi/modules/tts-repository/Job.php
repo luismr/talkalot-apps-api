@@ -96,7 +96,12 @@ class Job {
 	}
 
 	private function downloadMp3() {
-		$url = $this->ttsEngineEndpoint . "/say/" . $this->language . "/" . $this->gender . "/" . urlencode($this->text);
+		$url = $this->ttsEngineEndpoint . "/say/";
+		$fields = array(
+			"language" => $this->language,
+			"gender" => $this->gender,
+			"text" => $this->text	
+		);
 		
 		syslog(LOG_INFO, "Job [" . $this->name . "] CURL URL download tts: " . $url);
 		
@@ -109,7 +114,7 @@ class Job {
 		);
 		
 		$client = new RestCurlClient();
-		$data = $client->get($url, $options);
+		$data = $client->post($url, $fields, $options);
 		
 		$workfile = fopen($this->fileMp3, "w+");
 		fputs($workfile, $data);
