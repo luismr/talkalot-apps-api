@@ -68,7 +68,7 @@ class RestCurlClient {
 		$http_options [CURLOPT_POST] = true;
 		$http_options [CURLOPT_POSTFIELDS] = $fields;
 		if (is_array ( $fields )) {
-			if (is_array($http_options) && is_array($http_options[CURLOPT_HTTPHEADER])) {
+			if (is_array($http_options[CURLOPT_HTTPHEADER])) {
 				$options = $http_options[CURLOPT_HTTPHEADER];
 				$options [] = 'Content-Type: multipart/form-data';
 				
