@@ -96,12 +96,7 @@ class Job {
 	}
 
 	private function downloadMp3() {
-		$url = $this->ttsEngineEndpoint . "/say";
-		$fields = array(
-			"language" => urlencode($this->language),
-			"gender" => urlencode($this->gender),
-			"text" => urldecode($this->text)	
-		);
+		$url = $this->ttsEngineEndpoint . "/say/" . $this->language . "/" . $this->gender . "/" . urlencode($this->text);
 				
 		$options = array(
 			CURLOPT_HTTPHEADER => array(
@@ -110,10 +105,10 @@ class Job {
 			)	
 		);
 
-		syslog(LOG_INFO, "Job [" . $this->name . "] CURL URL download tts: " . $url . "\n | FORM: " . print_r($fields, true) . "\n | OPTIONS: " . print_r($options, true));
+		syslog(LOG_INFO, "Job [" . $this->name . "] CURL URL download tts: " . $url);
 		
 		$client = new RestCurlClient();
-		$data = $client->post($url, $fields, $options);
+		$data = $client->get($url, $options);
 		
 		$workfile = fopen($this->fileMp3, "w+");
 		fputs($workfile, $data);
