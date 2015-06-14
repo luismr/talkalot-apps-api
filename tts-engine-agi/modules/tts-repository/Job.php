@@ -96,7 +96,7 @@ class Job {
 	}
 
 	private function downloadMp3() {
-		$url = $this->ttsEngineEndpoint . "/say/";
+		$url = $this->ttsEngineEndpoint . "/say";
 		$fields = array(
 			"language" => urlencode($this->language),
 			"gender" => urlencode($this->gender),
