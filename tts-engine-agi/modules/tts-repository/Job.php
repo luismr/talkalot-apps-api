@@ -96,7 +96,7 @@ class Job {
 	}
 
 	private function downloadMp3() {
-		$url = $this->ttsEngineEndpoint . "/say/" . $this->language . "/" . $this->gender . "/" . rawurlencode($this->text);
+		$url = $this->ttsEngineEndpoint . "/say/" . $this->language . "/" . $this->gender . "/" . urlencode($this->text);
 		
 		syslog(LOG_INFO, "Job [" . $this->name . "] CURL URL download tts: " . $url);
 		
