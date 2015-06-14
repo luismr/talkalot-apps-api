@@ -1,22 +1,26 @@
 <?php
 class HttpServerException extends Exception {
 }
+
 class HttpServerException404 extends Exception {
 	function __construct($message = 'Not Found') {
 		parent::__construct ( $message, 404 );
 	}
 }
+
 class RestClientException extends Exception {
 }
+
 class RestCurlClient {
 	public $handle;
 	public $http_options;
 	public $response_object;
 	public $response_info;
+
 	function __construct() {
 		$this->http_options = array ();
 		$this->http_options [CURLOPT_RETURNTRANSFER] = true;
-		$this->http_options [CURLOPT_FOLLOWLOCATION] = false;
+		$this->http_options [CURLOPT_FOLLOWLOCATION] = true;
 		$this->http_options [CURLOPT_USERAGENT] = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13';
 	}
 	
@@ -68,23 +72,13 @@ class RestCurlClient {
 		$http_options [CURLOPT_POST] = true;
 		$http_options [CURLOPT_POSTFIELDS] = $fields;
 		if (is_array ( $fields )) {
-			syslog(LOG_INFO, "HTTP Rest Client --> POST --> Fields");
-			
 			if (is_array($http_options[CURLOPT_HTTPHEADER])) {
-				syslog(LOG_INFO, "HTTP Rest Client --> POST --> Fields --> HEADER IS SET");
-				
 				$options = $http_options[CURLOPT_HTTPHEADER];
 				$options [] = 'Content-Type: multipart/form-data';
 				
 				$http_options[CURLOPT_HTTPHEADER] = $options;
-				
-				syslog(LOG_INFO, "HTTP Rest Client --> POST --> Fields --> HEADER --> " . print_r($http_options, true));
 			} else {
-				syslog(LOG_INFO, "HTTP Rest Client --> POST --> Fields --> HEADER IS NOT SET");
-				
 				$http_options[CURLOPT_HTTPHEADER] = array('Content-Type: multipart/form-data');
-				
-				syslog(LOG_INFO, "HTTP Rest Client --> POST --> Fields --> HEADER --> " . print_r($http_options, true));
 			}
 		}
 		
@@ -161,6 +155,7 @@ class RestCurlClient {
 		curl_close ( $this->handle );
 		return $this->response_object;
 	}
+	
 	private function http_parse_message($res) {
 		if (! $res) {
 			throw new HttpServerException ( curl_error ( $this->handle ), - 1 );
