@@ -83,7 +83,7 @@ class Job {
 
 	private function convertJobAudioFormat() {
 		$sox = (file_exists("/usr/bin/sox")) ? "/usr/bin/sox" : 
-					(file_exists("/usr/local/bin/sox")) ? "/usr/local/bin/sox" : null;
+					((file_exists("/usr/local/bin/sox")) ? "/usr/local/bin/sox" : null);
 		
 		if ($sox == null) {
 			throw new Exception("Sox not available!");
