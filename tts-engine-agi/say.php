@@ -46,7 +46,7 @@ try {
 	$job = $factory->createJob($language, $gender, $text);
 	$agi->verbose("Job [" . $job->getName(). "] \n\n" . print_r($job, true) . "\n\n");
 	
-	$agi->verbose("Job [" . $job->getName . "]->isAvailable() == " . (($job->isAvailable()) ? "TRUE" : "FALSE"));
+	$agi->verbose("Job [" . $job->getName() . "]->isAvailable() == " . (($job->isAvailable()) ? "TRUE" : "FALSE"));
 	if (! $job->isAvailable()) {
 		$job->perform();
 	}
