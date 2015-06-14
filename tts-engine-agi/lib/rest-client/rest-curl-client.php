@@ -68,13 +68,23 @@ class RestCurlClient {
 		$http_options [CURLOPT_POST] = true;
 		$http_options [CURLOPT_POSTFIELDS] = $fields;
 		if (is_array ( $fields )) {
+			syslog(LOG_INFO, "HTTP Rest Client --> POST --> Fields");
+			
 			if (is_array($http_options[CURLOPT_HTTPHEADER])) {
+				syslog(LOG_INFO, "HTTP Rest Client --> POST --> Fields --> HEADER IS SET");
+				
 				$options = $http_options[CURLOPT_HTTPHEADER];
 				$options [] = 'Content-Type: multipart/form-data';
 				
 				$http_options[CURLOPT_HTTPHEADER] = $options;
+				
+				syslog(LOG_INFO, "HTTP Rest Client --> POST --> Fields --> HEADER --> " . print_r($http_options, true));
 			} else {
+				syslog(LOG_INFO, "HTTP Rest Client --> POST --> Fields --> HEADER IS NOT SET");
+				
 				$http_options[CURLOPT_HTTPHEADER] = array('Content-Type: multipart/form-data');
+				
+				syslog(LOG_INFO, "HTTP Rest Client --> POST --> Fields --> HEADER --> " . print_r($http_options, true));
 			}
 		}
 		
