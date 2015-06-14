@@ -43,6 +43,10 @@ class Job {
 		return $available;
 	}
 
+	public function getName() {
+		return $this->name;
+	}
+	
 	public function getFilename() {
 		return $this->filename;
 	}
@@ -86,12 +90,16 @@ class Job {
 		}
 		
 		$cmd = $sox . " " . $this->fileMp3 . " -t raw -r 8000 -s -2 -c 1 " . $this->fileWav;
-
+		syslog(LOG_INFO, "Job [" . $this->name . "] SOX convert command line: " . $cmd);
+		
 		exec($cmd);		
 	}
 
 	private function downloadMp3() {
 		$url = $this->ttsEngineEndpoint . "/say/" . $this->language . "/" . $this->gender . "/" . $this->text;
+		syslog(LOG_INFO, "Job [" . $this->name . "] CURL URL download tts: " . $url);
+		
+		
 		$options = array(
 			CURLOPT_HTTPHEADER => array(
 					"X-LigFlat-TTS-Licence: " . $this->license,

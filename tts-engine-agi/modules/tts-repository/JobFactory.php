@@ -6,12 +6,12 @@ if (!defined('__ROOT__')) {
 
 require_once("Job.php");
 
-class RepositoryService {
+class JobFactory {
 	static protected $instance = null;
 
 	static function getInstance($license, $key) {
 		if (is_null(static::$instance)) {
-			static::$instance = new RepositoryService($license, $key);
+			static::$instance = new JobFactory($license, $key);
 		}
 
 		return static::$instance;

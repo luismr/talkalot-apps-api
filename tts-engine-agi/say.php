@@ -17,7 +17,7 @@ if (!defined('__ROOT__')) {
 }
 
 require_once(__ROOT__ . "/lib/phpagi/phpagi.php");
-require_once(__ROOT__ . "/modules/tts-repository/RepositoryService.php");
+require_once(__ROOT__ . "/modules/tts-repository/JobFactory.php");
 
 $agi = new AGI();
 
@@ -38,17 +38,24 @@ if ($text == null || trim($text) == "") {
 	die("Text [" . $text . "] is invalid!");
 }
 
+$agi->verbose("TTS Call [" . $language . "|" . $gender . "|" . $text . "]");
+
 try {
-	$service = RepositoryService::getInstance($licence, $key);
-	$job = $service->createJob($language, $gender, $text);
+	$factory = JobFactory::getInstance($licence, $key);
 	
+	$job = $factory->createJob($language, $gender, $text);
+	$agi->verbose("Job [" . $job->getName(). "] \n\n" . print_r($job, true) . "\n\n");
+	
+	$agi->verbose("Job [" . $job->getName . "]->isAvailable() == " . (($job->isAvailable()) ? "TRUE" : "FALSE"));
 	if (! $job->isAvailable()) {
 		$job->perform();
 	}
 
 	$agi->stream_file($job->getFilename());
 } catch (Exception $e) {
-	die("An exception was detected [" . $e . "]");	
+	$msg = "An exception was detected [" . $e . "]";
+	$agi->verbose($msg);
+	die($msg);	
 }
 
 ?>
