@@ -97,7 +97,8 @@ class Job {
 
 	private function downloadMp3() {
 		$url = $this->ttsEngineEndpoint . "/say/" . $this->language . "/" . $this->gender . "/" . urlencode($this->text);
-				
+		syslog(LOG_INFO, $url);
+		
 		$options = array(
 			CURLOPT_HTTPHEADER => array(
 					"X-LigFlat-TTS-Licence: " . $this->license,
