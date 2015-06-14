@@ -103,7 +103,7 @@ class Job {
 			"text" => $this->text	
 		);
 		
-		syslog(LOG_INFO, "Job [" . $this->name . "] CURL URL download tts: " . $url);
+		syslog(LOG_INFO, "Job [" . $this->name . "] CURL URL download tts: " . $url . "\n" . print_r($fields, true));
 		
 		
 		$options = array(
