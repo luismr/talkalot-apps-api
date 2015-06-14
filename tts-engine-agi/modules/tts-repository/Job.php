@@ -106,12 +106,12 @@ class Job {
 		syslog(LOG_INFO, "Job [" . $this->name . "] CURL URL download tts: " . $url . "\n" . print_r($fields, true));
 		
 		
-		$options = array(
-			CURLOPT_HTTPHEADER => array(
-					"X-LigFlat-TTS-Licence: " . $this->license,
-					"X-LigFlat-TTS-Key: " . $this->key
-			)	
-		);
+// 		$options = array(
+// 			CURLOPT_HTTPHEADER => array(
+// 					"X-LigFlat-TTS-Licence: " . $this->license,
+// 					"X-LigFlat-TTS-Key: " . $this->key
+// 			)	
+// 		);
 		
 		$client = new RestCurlClient();
 		$data = $client->post($url, $fields, $options);
