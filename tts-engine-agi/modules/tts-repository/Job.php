@@ -110,7 +110,7 @@ class Job {
 			)	
 		);
 		
-		syslog(LOG_INFO, "Job [" . $this->name . "] CURL URL download tts: " . $url . "\n FORM: " . print_r($fields, true)) . "\n OPTIONS: " . print_r($options, true);
+		syslog(LOG_INFO, "Job [" . $this->name . "] CURL URL download tts: " . $url . "FORM: " . print_r($fields, true) . "\n OPTIONS: " . print_r($options, true));
 		
 		$client = new RestCurlClient();
 		$data = $client->post($url, $fields, $options);
