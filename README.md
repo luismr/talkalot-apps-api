@@ -14,14 +14,13 @@ If you don't have these packages installed, please google it depending on your o
 ## Instalation
 
 Clone this repository
-
 ```
 $ cd ~/
 $ git clone https://github.com/luismr/talkalot-apps-api.git
 $ cd talkalot-apps-api
 ```
 
-Then create a symbolic link in you **Asterisk AGI** directory pointing to your cloned copy, for exemaple bellow (Ubuntu) do
+Then create a symbolic link in you **Asterisk AGI** directory pointing to your cloned copy, for examaple in Ubuntu do
 
 ```
 $ cd /usr/share/asterisk/agi-bin
