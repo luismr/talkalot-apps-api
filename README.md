@@ -9,7 +9,7 @@ These packages are **mandatory**.
 * SOX
 * SOX-MP3
 
-If you don't have these packages installed, please google it depending you operating system.
+If you don't have these packages installed, please google it depending on your operating system.
 
 ## Instalation
 
