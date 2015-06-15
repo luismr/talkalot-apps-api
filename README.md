@@ -20,7 +20,7 @@ $ git clone https://github.com/luismr/talkalot-apps-api.git
 $ cd talkalot-apps-api
 ```
 
-Then create a symbolic link in you **Asterisk AGI** directory pointing to your cloned copy, for examaple in Ubuntu do
+Then create a symbolic link in you **Asterisk AGI** directory pointing to your cloned copy, for example in Ubuntu do
 
 ```
 $ cd /usr/share/asterisk/agi-bin
