@@ -69,17 +69,20 @@ class RestCurlClient {
 	 */
 	function post($url, $fields = array(), $http_options = array()) {
 		$http_options = $this->http_options + $http_options;
-		$http_options [CURLOPT_POST] = true;
-		$http_options [CURLOPT_POSTFIELDS] = $fields;
-		if (is_array ( $fields )) {
-			if (is_array($http_options[CURLOPT_HTTPHEADER])) {
-				$options = $http_options[CURLOPT_HTTPHEADER];
-				$options [] = 'Content-Type: multipart/form-data';
-				
-				$http_options[CURLOPT_HTTPHEADER] = $options;
-			} else {
-				$http_options[CURLOPT_HTTPHEADER] = array('Content-Type: multipart/form-data');
+
+		if ($fields != null && is_array ( $fields ) && count($fields) > 0) {
+			$postData = '';
+			foreach($fields as $k => $v)
+			{
+				$postData .= $k . '='. urlencode($v) .'&';
 			}
+			rtrim($postData, '&');	
+
+			$http_options [CURLOPT_POST] = true;
+			$http_options [CURLOPT_POSTFIELDS] = $postData;
+			$http_options[CURLOPT_HTTPHEADER] = array('Content-Type: application/x-www-form-urlencoded');
+		} else {
+			throw new RestClientException ( "You must sent a post data form." );
 		}
 		
 		$this->handle = curl_init ( $url );

@@ -38,16 +38,34 @@ if ($text == null || trim($text) == "") {
 	die("Text [" . $text . "] is invalid!");
 }
 
-$agi->verbose("TTS Call [" . $language . "|" . $gender . "|" . $text . "]");
+$post = $args[4];
+if ($post != null) {
+	$post = ($post == "true") ? true : false;
+} else {
+	$post = false;
+}
+
+$devel = $args[5];
+if ($devel != null) {
+	$devel = ($devel == "true") ? true : false;
+} else {
+	$devel = false;
+}
+
+$agi->verbose("TTS Call [" . $language . "|" . $gender . "|" . $text . " | " . (($post) ? "TRUE" : "FALSE") . " | " . (($devel) ? "TRUE" : "FALSE") . "]");
 
 try {
 	$factory = JobFactory::getInstance($licence, $key);
 	
 	$job = $factory->createJob($language, $gender, $text);
-	$agi->verbose("Job [" . $job->getName(). "] \n\n" . print_r($job, true) . "\n\n");
-	
+
 	$agi->verbose("Job [" . $job->getName() . "]->isAvailable() == " . (($job->isAvailable()) ? "TRUE" : "FALSE"));
 	if (! $job->isAvailable()) {
+		if ($devel) {
+			$job->setTtsEngineEndpoint("http://localhost:8080/tts-engine/tts");
+		}
+		
+		$job->setForcedPost($post);
 		$job->perform();
 	}
 

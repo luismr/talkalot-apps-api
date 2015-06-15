@@ -20,6 +20,7 @@ class Job {
 	private $fileMp3;
 	private $fileWav;
 	private $pathRepository;
+	private $forcedPost;
 	
 	private $ttsEngineEndpoint;
 
@@ -32,12 +33,29 @@ class Job {
 		$this->key = $key;
 
 		$this->ttsEngineEndpoint = "https://api.ligflat.com.br/tts";
+		$this->forcedPost = false;
 		
 		$this->pathRepository = sys_get_temp_dir();
 
 		$this->generateName();
 	}
 
+	public function setTtsEngineEndpoint($endpoint) {
+		$this->ttsEngineEndpoint = $endpoint;
+	}
+	
+	public function getTtsEngineEndpoint() {
+		return $this->ttsEngineEndpoint;
+	}
+	
+	public function setForcedPost($forced) {
+		$this->forcedPost = $forced;
+	}
+	
+	public function isForcedPost() {
+		return $this->forcedPost;
+	}
+	
 	public function isAvailable() {
 		$available = $this->isMp3Available() && $this->isWavAvailable();
 		return $available;
@@ -96,24 +114,46 @@ class Job {
 	}
 
 	private function downloadMp3() {
-		$url = $this->ttsEngineEndpoint . "/say/" . $this->language . "/" . $this->gender . "/" . urlencode($this->text);
-		syslog(LOG_INFO, $url);
-		
 		$options = array(
-			CURLOPT_HTTPHEADER => array(
-					"X-LigFlat-TTS-Licence: " . $this->license,
-					"X-LigFlat-TTS-Key: " . $this->key
-			)	
+				CURLOPT_HTTPHEADER => array(
+						"X-LigFlat-TTS-Licence: " . $this->license,
+						"X-LigFlat-TTS-Key: " . $this->key
+				)
 		);
-
-		syslog(LOG_INFO, "Job [" . $this->name . "] CURL URL download tts: " . $url);
 		
-		$client = new RestCurlClient();
-		$data = $client->get($url, $options);
+		if (!$this->isForcedPost() || strlen($this->text) > 32) {
+			$data = $this->downloadByHttpPost($options);
+		} else {
+			$data = $this->downloadByHttpGet($options);
+		}
 		
 		$workfile = fopen($this->fileMp3, "w+");
 		fputs($workfile, $data);
 		fclose($workfile);
+	}
+	
+	private function downloadByHttpGet($options) {
+		$url = $this->ttsEngineEndpoint . "/say/" . $this->language . "/" . $this->gender . "/" . urlencode($this->text);
+		
+		$client = new RestCurlClient();
+		$data = $client->get($url, $options);
+
+		return $data;
+	}
+	
+	private function downloadByHttpPost($options) {
+		$url = $this->ttsEngineEndpoint . "/say";
+		
+		$fields = array(
+				"text" => $this->text,
+				"language" => $this->language,
+				"gender" => $this->gender
+		);
+		
+		$client = new RestCurlClient();
+		$data = $client->post($url, $fields, $options);
+		
+		return $data;
 	}
 
 	private function isMp3Available() {
