@@ -24,7 +24,7 @@ Then create a symbolic link in you **Asterisk AGI** directory pointing to your c
 
 ```
 $ cd /usr/share/asterisk/agi-bin
-$ sudo ln -s ~/talkalot-apps-api/tts-engine/agi/say.php .
+$ sudo ln -s ~/talkalot-apps-api/tts-engine-agi/say.php .
 $ ls -l say.php
 ```
 ## Configuration
@@ -71,12 +71,12 @@ Where:
    - **es-ES** - Spanish (Spain)
    - **pt-BR** - Portuguese (Brazil)
 - gender (**mandatory**) - gender of voice to synthesize
-   - male
-   - female
+   - **male**
+   - **female**
 - text (**mandatory**) - text to synthesize 
 - forcePost (*optional*) - for large texts we force post request with right encoding handling
-   - true
-   - false
+   - **true**
+   - **false**
 
 ## Where to buy
 
