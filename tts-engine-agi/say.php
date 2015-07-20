@@ -52,28 +52,28 @@ if ($devel != null) {
 	$devel = false;
 }
 
-$agi->verbose("TTS Call [" . $language . "|" . $gender . "|" . $text . " | " . (($post) ? "TRUE" : "FALSE") . " | " . (($devel) ? "TRUE" : "FALSE") . "]");
-
 try {
 	$factory = JobFactory::getInstance($licence, $key);
-	
+
 	$job = $factory->createJob($language, $gender, $text);
 
-	$agi->verbose("Job [" . $job->getName() . "]->isAvailable() == " . (($job->isAvailable()) ? "TRUE" : "FALSE"));
 	if (! $job->isAvailable()) {
 		if ($devel) {
 			$job->setTtsEngineEndpoint("http://localhost:8080/tts-engine/tts");
 		}
-		
+
 		$job->setForcedPost($post);
 		$job->perform();
 	}
 
-	$agi->stream_file($job->getFilename());
+	$digits = $agi->stream_file($job->getFilename(), AST_DIGIT_ANY);
+	$digits = $digits['result'];
+
+	$agi->verbose("Digit pressed = " . $digit);
 } catch (Exception $e) {
 	$msg = "An exception was detected [" . $e . "]";
 	$agi->verbose($msg);
-	die($msg);	
+	die($msg);
 }
 
 ?>
