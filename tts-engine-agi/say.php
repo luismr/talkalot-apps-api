@@ -67,9 +67,11 @@ try {
 	}
 
 	$rc = $agi->stream_file($job->getFilename(), AST_DIGIT_ANY);
-	$digit = $rc['result'];
+	$digit = chr($rc['result']);
 
-	$agi->set_variable("SAY_DIGIT", $digit);
+	if (strpos(AST_DIGIT_ANY, $digit) !== false) {
+		$agi->set_variable("SAY_DIGIT", $digit);
+	}
 } catch (Exception $e) {
 	$msg = "An exception was detected [" . $e . "]";
 	$agi->verbose($msg);
