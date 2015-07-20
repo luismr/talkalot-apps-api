@@ -69,10 +69,7 @@ try {
 	$rc = $agi->stream_file($job->getFilename(), AST_DIGIT_ANY);
 	$digit = $rc['result'];
 
-	$agi->verbose(print_r($rc, true));
-	$agi->verbose(print_r($digit, true));
-
-	$agi->verbose("Digit pressed = " . chr($digit));
+	$agi->set_variable("SAY_DIGIT", $digit);
 } catch (Exception $e) {
 	$msg = "An exception was detected [" . $e . "]";
 	$agi->verbose($msg);
