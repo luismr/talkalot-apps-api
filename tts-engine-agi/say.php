@@ -67,7 +67,7 @@ try {
 	}
 
 	$digit = $agi->stream_file($job->getFilename(), AST_DIGIT_ANY);
-	$digit = $digits['result'];
+	$digit = $digit['result'];
 
 	$agi->verbose("Digit pressed = " . chr($digit));
 } catch (Exception $e) {
