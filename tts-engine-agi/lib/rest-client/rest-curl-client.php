@@ -21,9 +21,11 @@ class RestCurlClient {
 		$this->http_options = array ();
 		$this->http_options [CURLOPT_RETURNTRANSFER] = true;
 		$this->http_options [CURLOPT_FOLLOWLOCATION] = true;
+		$this->http_options [CURLOPT_SSL_VERIFYHOST] = false;
+		$this->http_options [CURLOPT_SSL_VERIFYPEER] = false;
 		$this->http_options [CURLOPT_USERAGENT] = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13';
 	}
-	
+
 	/**
 	 * Perform a GET call to server
 	 *
@@ -40,18 +42,18 @@ class RestCurlClient {
 	function get($url, $http_options = array()) {
 		$http_options = $http_options + $this->http_options;
 		$this->handle = curl_init ( $url );
-		
+
 		if (! curl_setopt_array ( $this->handle, $http_options )) {
 			throw new RestClientException ( "Error setting cURL request options" );
 		}
-		
+
 		$this->response_object = curl_exec ( $this->handle );
 		$this->http_parse_message ( $this->response_object );
-		
+
 		curl_close ( $this->handle );
 		return $this->response_object;
 	}
-	
+
 	/**
 	 * Perform a POST call to the server
 	 *
@@ -76,7 +78,7 @@ class RestCurlClient {
 			{
 				$postData .= $k . '='. urlencode($v) .'&';
 			}
-			rtrim($postData, '&');	
+			rtrim($postData, '&');
 
 			$http_options [CURLOPT_POST] = true;
 			$http_options [CURLOPT_POSTFIELDS] = $postData;
@@ -84,20 +86,20 @@ class RestCurlClient {
 		} else {
 			throw new RestClientException ( "You must sent a post data form." );
 		}
-		
+
 		$this->handle = curl_init ( $url );
-		
+
 		if (! curl_setopt_array ( $this->handle, $http_options )) {
 			throw new RestClientException ( "Error setting cURL request options." );
 		}
-		
+
 		$this->response_object = curl_exec ( $this->handle );
 		$this->http_parse_message ( $this->response_object );
-		
+
 		curl_close ( $this->handle );
 		return $this->response_object;
 	}
-	
+
 	/**
 	 * Perform a PUT call to the server
 	 *
@@ -118,18 +120,18 @@ class RestCurlClient {
 		$http_options [CURLOPT_CUSTOMREQUEST] = 'PUT';
 		$http_options [CURLOPT_POSTFIELDS] = $data;
 		$this->handle = curl_init ( $url );
-		
+
 		if (! curl_setopt_array ( $this->handle, $http_options )) {
 			throw new RestClientException ( "Error setting cURL request options." );
 		}
-		
+
 		$this->response_object = curl_exec ( $this->handle );
 		$this->http_parse_message ( $this->response_object );
-		
+
 		curl_close ( $this->handle );
 		return $this->response_object;
 	}
-	
+
 	/**
 	 * Perform a DELETE call to server
 	 *
@@ -147,34 +149,34 @@ class RestCurlClient {
 		$http_options = $http_options + $this->http_options;
 		$http_options [CURLOPT_CUSTOMREQUEST] = 'DELETE';
 		$this->handle = curl_init ( $url );
-		
+
 		if (! curl_setopt_array ( $this->handle, $http_options )) {
 			throw new RestClientException ( "Error setting cURL request options." );
 		}
-		
+
 		$this->response_object = curl_exec ( $this->handle );
 		$this->http_parse_message ( $this->response_object );
-		
+
 		curl_close ( $this->handle );
 		return $this->response_object;
 	}
-	
+
 	private function http_parse_message($res) {
 		if (! $res) {
 			throw new HttpServerException ( curl_error ( $this->handle ), - 1 );
 		}
-		
+
 		$this->response_info = curl_getinfo ( $this->handle );
 		$code = $this->response_info ['http_code'];
-		
+
 		if ($code == 404) {
 			throw new HttpServerException404 ( curl_error ( $this->handle ) );
 		}
-		
+
 		if ($code >= 400 && $code <= 600) {
 			throw new HttpServerException ( 'Server response status was: ' . $code . ' with response: [' . $res . ']', $code );
 		}
-		
+
 		if (! in_array ( $code, range ( 200, 207 ) )) {
 			throw new HttpServerException ( 'Server response status was: ' . $code . ' with response: [' . $res . ']', $code );
 		}
