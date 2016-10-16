@@ -14,7 +14,7 @@ $key = "YOURLICENSEKEYHERE";
  *     some valid http/https URL such as http://some.domain.com/v2/tts
  */
 
-$endpoint = "DEFAULT"
+$endpoint = "DEFAULT";
 
 /*
  * Do not edit after this
