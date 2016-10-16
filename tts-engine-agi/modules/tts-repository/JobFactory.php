@@ -9,14 +9,6 @@ require_once("Job.php");
 class JobFactory {
 	static protected $instance = null;
 
-	static function getInstance($license, $key) {
-		if (is_null(static::$instance)) {
-			static::$instance = new JobFactory($license, $key);
-		}
-
-		return static::$instance;
-	}
-
 	static function getInstance($endpoint, $license, $key) {
 		if (is_null(static::$instance)) {
 			static::$instance = new JobFactory($endpoint, $license, $key);
