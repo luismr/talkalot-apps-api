@@ -9,6 +9,14 @@ $licence = "YORLICENCEHERE";
 $key = "YOURLICENSEKEYHERE";
 
 /*
+ * Editjust if you have our ENGINE in INHOUSE mode
+ *     DEFAULT -> means default ;-)
+ *     some valid http/https URL such as http://some.domain.com/v2/tts
+ */
+
+$endpoint = "DEFAULT"
+
+/*
  * Do not edit after this
  */
 
@@ -52,16 +60,21 @@ if ($devel != null) {
 	$devel = false;
 }
 
-try {
-	$factory = JobFactory::getInstance($licence, $key);
+if ( $endpoint != "DEFAULT" && filter_var($endpoint, FILTER_VALIDATE_URL) === false) {
+	die("Endpoint [" . $endpoint . "] is invalid!");
+} else {
+	if ($devel) {
+		$endpoint = "http://localhost:8080/tts";
+	} else {
+		$endpoint = "https://api.ligflat.com.br/v2/tts";
+	}
+}
 
+try {
+	$factory = JobFactory::getInstance($endpoint, $licence, $key);
 	$job = $factory->createJob($language, $gender, $text);
 
 	if (! $job->isAvailable()) {
-		if ($devel) {
-			$job->setTtsEngineEndpoint("http://localhost:8080/tts-engine/tts");
-		}
-
 		$job->setForcedPost($post);
 		$job->perform();
 	}

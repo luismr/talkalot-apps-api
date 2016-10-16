@@ -21,7 +21,7 @@ class Job {
 	private $fileWav;
 	private $pathRepository;
 	private $forcedPost;
-	
+
 	private $ttsEngineEndpoint;
 
 	public function __construct($language, $gender, $text, $license, $key) {
@@ -32,9 +32,9 @@ class Job {
 		$this->license = $license;
 		$this->key = $key;
 
-		$this->ttsEngineEndpoint = "https://api.ligflat.com.br/tts";
+		$this->ttsEngineEndpoint = "https://api.ligflat.com.br/v2/tts";
 		$this->forcedPost = false;
-		
+
 		$this->pathRepository = sys_get_temp_dir();
 
 		$this->generateName();
@@ -43,19 +43,19 @@ class Job {
 	public function setTtsEngineEndpoint($endpoint) {
 		$this->ttsEngineEndpoint = $endpoint;
 	}
-	
+
 	public function getTtsEngineEndpoint() {
 		return $this->ttsEngineEndpoint;
 	}
-	
+
 	public function setForcedPost($forced) {
 		$this->forcedPost = $forced;
 	}
-	
+
 	public function isForcedPost() {
 		return $this->forcedPost;
 	}
-	
+
 	public function isAvailable() {
 		$available = $this->isMp3Available() && $this->isWavAvailable();
 		return $available;
@@ -64,7 +64,7 @@ class Job {
 	public function getName() {
 		return $this->name;
 	}
-	
+
 	public function getFilename() {
 		return $this->filename;
 	}
@@ -100,17 +100,17 @@ class Job {
 	}
 
 	private function convertJobAudioFormat() {
-		$sox = (file_exists("/usr/bin/sox")) ? "/usr/bin/sox" : 
+		$sox = (file_exists("/usr/bin/sox")) ? "/usr/bin/sox" :
 					((file_exists("/usr/local/bin/sox")) ? "/usr/local/bin/sox" : null);
-		
+
 		if ($sox == null) {
 			throw new Exception("Sox not available!");
 		}
-		
+
 		$cmd = $sox . " " . $this->fileMp3 . " -t raw -r 8000 -s -2 -c 1 " . $this->fileWav;
 		syslog(LOG_INFO, "Job [" . $this->name . "] SOX convert command line: " . $cmd);
-		
-		exec($cmd);		
+
+		exec($cmd);
 	}
 
 	private function downloadMp3() {
@@ -120,39 +120,39 @@ class Job {
 						"X-LigFlat-TTS-Key: " . $this->key
 				)
 		);
-		
+
 		if (!$this->isForcedPost() || strlen($this->text) > 32) {
 			$data = $this->downloadByHttpPost($options);
 		} else {
 			$data = $this->downloadByHttpGet($options);
 		}
-		
+
 		$workfile = fopen($this->fileMp3, "w+");
 		fputs($workfile, $data);
 		fclose($workfile);
 	}
-	
+
 	private function downloadByHttpGet($options) {
 		$url = $this->ttsEngineEndpoint . "/say/" . $this->language . "/" . $this->gender . "/" . urlencode($this->text);
-		
+
 		$client = new RestCurlClient();
 		$data = $client->get($url, $options);
 
 		return $data;
 	}
-	
+
 	private function downloadByHttpPost($options) {
 		$url = $this->ttsEngineEndpoint . "/say";
-		
+
 		$fields = array(
 				"text" => $this->text,
 				"language" => $this->language,
 				"gender" => $this->gender
 		);
-		
+
 		$client = new RestCurlClient();
 		$data = $client->post($url, $fields, $options);
-		
+
 		return $data;
 	}
 
