@@ -24,7 +24,7 @@ class JobFactory {
 	final private function __construct($endpoint, $license, $key) {
 		$this->license = $license;
 		$this->key = $key;
-		$this->endpoint = ($endpoint != null || $endpoint != "") ? endpoint : $this->endpoint;
+		$this->endpoint = ($endpoint != null || $endpoint != "") ? $endpoint : $this->endpoint;
 	}
 
 	public function createJob($language, $gender, $text) {
